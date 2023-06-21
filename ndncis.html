@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Employee Management</title>
+</head>
+<body>
+  <div id="login-page">
+    <h2>Login</h2>
+    <form id="login-form">
+      <label for="username">Username:</label>
+      <input type="text" id="username" required><br>
+      <label for="text">Password:</label>
+      <input type="text" id="password" required><br>
+      <button type="submit">Login</button>
+    </form>
+  </div>
+  <div id="table-page" style="display: none;">
+    <h2>Employee Details</h2>
+    <button id="add-employee-button">Add Employee</button>
+    <table id="employee-table">
+        <tr>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Mobile Number</th>
+          <th>Action</th>
+        </tr>
+    </table>
+  </div>
+  <div id="detail-page" style="display: none;">
+    <h2>Employee Details</h2>
+    <button id="back-button">Back</button>
+    <div id="employee-details"></div>
+  </div>
+
+  <div id="add-employee-page" style="display: none;">
+    <h2>Add Employee</h2>
+    <button id="back-button">Back</button>
+    <form id="add-employee-form">
+      <label for="employee-name">Name:</label>
+      <input type="text" id="employee-name" required><br>
+      <label for="employee-email">Email:</label>
+      <input type="email" id="employee-email" required><br>
+      <label for="employee-mobile">Mobile Number:</label>
+      <input type="tel" id="employee-mobile" required><br>
+      <button type="submit">Add</button>
+    </form>
+  </div>
+  <script>
+    const username = "Admin";
+    const password = "admin@123";
+    const employees = [
+      { name: "Naresh", email: "naresh@gmail.com", mobile: "9361198483" },
+      { name: "Pranesh", email: "pranesh@.com", mobile: "9659222849" }
+    ];
+    document.getElementById("login-form").addEventListener("submit", function(event) {
+      event.preventDefault();
+      const enteredUsername = document.getElementById("username").value;
+      const enteredPassword = document.getElementById("password").value;
+      if (enteredUsername === username && enteredPassword === password) {
+        showPage("table-page");
+        populateEmployeeTable();
+      } else {
+        alert("Invalid username or password. Please try again.");
+      }
+    });
+    document.getElementById("add-employee-button").addEventListener("click", function() {
+      showPage("add-employee-page");
+    });
+    document.getElementById("back-button").addEventListener("click", function() {
+      showPage("table-page");
+    });
+    document.getElementById("employee-table").addEventListener("click", function(event) {
+      if (event.target.classList.contains("delete-button")) {
+        const row = event.target.parentNode.parentNode;
+        row.parentNode.removeChild(row);
+      } else {
+        const name = event.target.parentNode.children[0].innerText;
+        const email = event.target.parentNode.children[1].innerText;
+        const mobile = event.target.parentNode.children[2].innerText;
+        showEmployeeDetails(name, email, mobile);
+      }
+    });
+    document.getElementById("add-employee-form").addEventListener("submit", function(event) {
+      event.preventDefault();
+      const name = document.getElementById("employee-name").value;
+      const email = document.getElementById("employee-email").value;
+      const mobile = document.getElementById("employee-mobile").value;
+      if (name && email && mobile) {
+        addEmployee(name, email, mobile);
+        document.getElementById("add-employee-form").reset();
+        showPage("table-page");
+      } else {
+        alert("Please fill in all fields.");
+      }
+    });
+    function showPage(pageId) {
+      const pages = ["login-page", "table-page", "detail-page", "add-employee-page"];
+      for (const page of pages) {
+        if (page === pageId) {
+          document.getElementById(page).style.display = "block";
+        } else {
+          document.getElementById(page).style.display = "none";
+        }
+      }
+    }
+    function populateEmployeeTable() {
+      const tableBody = document.getElementById("employee-table").getElementsByTagName("tbody")[0];
+      tableBody.innerHTML = "";
+      for (const employee of employees) {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${employee.name}</td>
+          <td>${employee.email}</td>
+          <td>${employee.mobile}</td>
+          <td><button class="delete-button">Delete</button></td>
+        `;
+        tableBody.appendChild(row);
+      }
+    }
+    function showEmployeeDetails(name, email, mobile) {
+      const employeeDetails = document.getElementById("employee-details");
+      employeeDetails.innerHTML = `
+        <p>Name: ${name}</p>
+        <p>Email: ${email}</p>
+        <p>Mobile Number: ${mobile}</p>
+      `;
+      showPage("detail-page");
+    }
+    function addEmployee(name, email, mobile) {
+      const tableBody = document.getElementById("employee-table").getElementsByTagName("tbody")[0];
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td>${name}</td>
+        <td>${email}</td>
+        <td>${mobile}</td>
+        <td><button class="delete-button">Delete</button></td>
+      `;
+      tableBody.appendChild(row);
+    }
+  </script>
+</body>
+</html>
